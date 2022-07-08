@@ -39,8 +39,10 @@
         }
         @include hotpot-md{
             flex-direction: row;
-            :nth-child(2) {
+            :nth-child(1){
                 margin-left: 32px;
+            }
+            :nth-child(2) {
                 margin-top: 0;
             }
         }
@@ -50,7 +52,8 @@
         }
     }
     .btn-container{
-        // margin-top: 32px;
+        margin-top: 32px;
+        // margin-bottom: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -58,7 +61,10 @@
     .support{
         margin-top: 32px;
         .input-container{
-            margin-top: 64px;
+            margin-top: 32px;
+            &:nth-child(1){
+                margin-top: 0 !important;
+            }
             .input-item{
                 margin-top: 22px;
                 >input,.ant-select{
