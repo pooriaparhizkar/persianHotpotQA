@@ -1,0 +1,70 @@
+@import '../utilities/references/index';
+.hotpot-app{
+    padding: 0 32px 64px;
+    .my-header{
+        .ant-card-body{
+                display: flex !important;
+                width: 100%;
+                align-items: center;
+                justify-content: center;
+                height: 112px;
+                h1{
+                    font-size: 32px;
+                }
+        }
+    }
+    .text-container{
+        .ant-card{
+            .ant-card-body{
+                display: flex;
+                flex-direction: column;
+                :nth-child(2) {
+                        margin-top: 0 !important;
+                    }
+            }
+        }
+        @include hotpot-pre-lg{
+            .ant-card{
+                width: 100%;
+            }
+        }
+        .ant-skeleton-paragraph{
+            overflow: hidden;
+        }
+        // margin-top: 32px;
+        display: flex;
+        flex-direction: column;
+        :nth-child(2) {
+            margin-top: 32px;
+        }
+        @include hotpot-md{
+            flex-direction: row;
+            :nth-child(2) {
+                margin-left: 32px;
+                margin-top: 0;
+            }
+        }
+        align-items: center;
+        >*{
+            flex: 1;
+        }
+    }
+    .btn-container{
+        // margin-top: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .support{
+        margin-top: 32px;
+        .input-container{
+            margin-top: 64px;
+            .input-item{
+                margin-top: 22px;
+                >input,.ant-select{
+                    margin-top: 12px;
+                }
+            }
+        }
+    }
+}

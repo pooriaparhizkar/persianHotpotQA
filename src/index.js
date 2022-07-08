@@ -1,13 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './utilities/styles/index.scss'
-import 'antd/dist/antd.css'; 
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./hotpot/App";
+import reportWebVitals from "./reportWebVitals";
+import "./utilities/styles/index.scss";
+import "antd/dist/antd.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      rtl
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
     <App />
   </React.StrictMode>
 );
