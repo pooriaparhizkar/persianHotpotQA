@@ -1,4 +1,4 @@
-export const SERVER = 'http://localhost:8001/api';
+export const SERVER = 'http://172.17.9.215/api';
 
 function generateHeader(object) {
     const header = {};

@@ -2,7 +2,7 @@ import "./app.scss";
 import { Card, Button, Typography, Space, Input, Skeleton, Select } from "antd";
 import { useEffect, useState } from "react";
 import { hotpotData } from "./data";
-import { post, responseValidator } from "../scripts/api";
+import { get, post, responseValidator } from "../scripts/api";
 import { toast } from "react-toastify";
 const { Option } = Select;
 function App() {
@@ -12,22 +12,62 @@ function App() {
   const [answer, setAnswer] = useState();
   const [support, setSupport] = useState();
   const [support2, setSupport2] = useState();
-  const [randomTextNumber, setRandomTextNumber] = useState(0);
-  const [text1, setText1] = useState(hotpotData[randomTextNumber].text1);
-  const [text2, setText2] = useState(hotpotData[randomTextNumber].text2);
+  // const [randomTextNumber, setRandomTextNumber] = useState(0);
+  const [text1, setText1] = useState([]);
+  const [text2, setText2] = useState([]);
+  const [title1, setTitle1] = useState("پاراگراف شماره یک");
+  const [title2, setTitle2] = useState("پاراگراف شماره دو");
   const [postLoading, setPostLoading] = useState(false);
+  const [dropdownOneRenderValue, setDropDownOneRenderValue] = useState();
+  const [dropdownTwoRenderValue, setDropdownTwoRenderValue] = useState();
+  const [questionType,setQuestionType]=useState();
+  // function randomNumberInRange(min, max) {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
 
-  function randomNumberInRange(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  function resetValues() {
+    setDropDownOneRenderValue(undefined);
+    setDropdownTwoRenderValue(undefined);
+    setTitle1(undefined);
+    setTitle2(undefined);
+    setText1([]);
+    setText2([]);
+    setSupport(undefined);
+    setSupport2(undefined);
+    setAnswer(undefined);
+    setQuestion(undefined);
   }
-  useEffect(() => {
+
+  function getData() {
+    resetValues();
     setLoading(true);
-    setTimeout(() => {
-      setText1(hotpotData[randomTextNumber].text1);
-      setText2(hotpotData[randomTextNumber].text2);
+
+    get("/get_paragraph/").then((res) => {
       setLoading(false);
-    }, 1000);
-  }, [randomTextNumber]);
+      if (responseValidator(res.status)) {
+        setText1(res.data.text1);
+        setText2(res.data.text2);
+        setTitle1(res.data.title1);
+        setTitle2(res.data.title2);
+        setQuestionType(res.data.type)
+      }
+      else {
+        toast.error("در گرفتن اطلاعات خطایی رخ داده است");
+      }
+    });
+  }
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     setText1(hotpotData[randomTextNumber].text1);
+  //     setText2(hotpotData[randomTextNumber].text2);
+  //     setLoading(false);
+  //   }, 1000);
+  // }, [randomTextNumber]);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   function submitHandler() {
     setPostLoading(true);
@@ -35,8 +75,10 @@ function App() {
       question,
       answer,
       supporting_facts: [support, support2],
+      type:questionType,
+      context:{title1,title2,text1,text2}
     };
-    post("/example/post", body).then((res) => {
+    post("/add_to_database/", body).then((res) => {
       if (responseValidator(res.status)) {
         toast.success("با موفقیت ثب شد.");
       } else {
@@ -58,7 +100,7 @@ function App() {
         <Title>Persian Hotpot QA</Title>
       </Card>
       <div className="text-container">
-        <Card title="پاراگراف شماره یک">
+        <Card title={`پاراگراف شماره یک ( ${title1} ) `}>
           {loading ? (
             <Skeleton active />
           ) : (
@@ -70,7 +112,7 @@ function App() {
             ))
           )}
         </Card>
-        <Card title="پاراگراف شماره دو">
+        <Card title={`پاراگراف شماره دو ( ${title2} ) `}>
           {loading ? (
             <Skeleton active />
           ) : (
@@ -84,12 +126,7 @@ function App() {
         </Card>
       </div>
       <div className="btn-container">
-        <Button
-          onClick={() => {
-            setRandomTextNumber(randomNumberInRange(0, hotpotData.length - 1));
-          }}
-          type="primary"
-        >
+        <Button onClick={() => getData()} type="primary">
           تولید نمونه جدید
         </Button>
       </div>
@@ -126,7 +163,7 @@ function App() {
 
             <div className="input-item">
               <Text type="secondary">
-                جملاتی از پاراگراف شماره ۱ که برای پیدا کردن جواب نیاز است را
+                جملاتی از پاراگراف شماره یک که برای پیدا کردن جواب نیاز است را
                 انتخاب کنید
               </Text>
               <Select
@@ -134,8 +171,15 @@ function App() {
                 allowClear
                 placeholder="جملات پشتیبان اول"
                 style={{ width: "100%" }}
+                value={dropdownOneRenderValue}
                 onChange={(e) => {
-                  //  console.log(e.map(item=>[JSON.parse(item).index, JSON.parse(item).item]));
+                  setDropDownOneRenderValue(e);
+                  console.log(
+                    e.map((item) => [
+                      JSON.parse(item).index,
+                      JSON.parse(item).item,
+                    ])
+                  );
                   if (e.length != 0)
                     setSupport(
                       e.map((item) => [
@@ -164,7 +208,9 @@ function App() {
                 allowClear
                 placeholder="جملات پشتیبان دوم"
                 style={{ width: "100%" }}
+                value={dropdownTwoRenderValue}
                 onChange={(e) => {
+                  setDropdownTwoRenderValue(e);
                   if (e.length != 0)
                     setSupport2(
                       e.map((item) => [
