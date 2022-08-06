@@ -20,7 +20,7 @@ function App() {
   const [postLoading, setPostLoading] = useState(false);
   const [dropdownOneRenderValue, setDropDownOneRenderValue] = useState();
   const [dropdownTwoRenderValue, setDropdownTwoRenderValue] = useState();
-  const [questionType,setQuestionType]=useState();
+  const [questionType, setQuestionType] = useState();
   // function randomNumberInRange(min, max) {
   //   return Math.floor(Math.random() * (max - min + 1)) + min;
   // }
@@ -49,9 +49,8 @@ function App() {
         setText2(res.data.text2);
         setTitle1(res.data.title1);
         setTitle2(res.data.title2);
-        setQuestionType(res.data.type)
-      }
-      else {
+        setQuestionType(res.data.type);
+      } else {
         toast.error("در گرفتن اطلاعات خطایی رخ داده است");
       }
     });
@@ -75,8 +74,8 @@ function App() {
       question,
       answer,
       supporting_facts: [support, support2],
-      type:questionType,
-      context:{title1,title2,text1,text2}
+      type: questionType,
+      context: { title1, title2, text1, text2 },
     };
     post("/add_to_database/", body).then((res) => {
       if (responseValidator(res.status)) {
@@ -99,37 +98,42 @@ function App() {
       <Card className="my-header">
         <Title>Persian Hotpot QA</Title>
       </Card>
-      <div className="text-container">
-        <Card title={`پاراگراف شماره یک ( ${title1} ) `}>
-          {loading ? (
-            <Skeleton active />
-          ) : (
-            text1.map((item, index) => (
-              <Text key={index} type="secondary">
-                {" "}
-                {item}{" "}
-              </Text>
-            ))
-          )}
-        </Card>
-        <Card title={`پاراگراف شماره دو ( ${title2} ) `}>
-          {loading ? (
-            <Skeleton active />
-          ) : (
-            text2.map((item, index) => (
-              <Text key={index} type="secondary">
-                {" "}
-                {item}{" "}
-              </Text>
-            ))
-          )}
-        </Card>
-      </div>
-      <div className="btn-container">
-        <Button onClick={() => getData()} type="primary">
-          تولید نمونه جدید
-        </Button>
-      </div>
+      <Card>
+        <Text className="question-type">
+          مدل سوال : {questionType == "comparison" ? "مقایسه‌ای" : "پل"}
+        </Text>
+        <div className="text-container">
+          <Card title={`پاراگراف شماره یک ( ${title1} ) `}>
+            {loading ? (
+              <Skeleton active />
+            ) : (
+              text1.map((item, index) => (
+                <Text key={index} type="secondary">
+                  {" "}
+                  {item}{" "}
+                </Text>
+              ))
+            )}
+          </Card>
+          <Card title={`پاراگراف شماره دو ( ${title2} ) `}>
+            {loading ? (
+              <Skeleton active />
+            ) : (
+              text2.map((item, index) => (
+                <Text key={index} type="secondary">
+                  {" "}
+                  {item}{" "}
+                </Text>
+              ))
+            )}
+          </Card>
+        </div>
+        <div className="btn-container">
+          <Button onClick={() => getData()} type="primary">
+            تولید نمونه جدید
+          </Button>
+        </div>
+      </Card>
       <Card className="support" title="تولید نمونه داده">
         <Space direction="vertical" size="large" style={{ display: "flex" }}>
           <Text>
