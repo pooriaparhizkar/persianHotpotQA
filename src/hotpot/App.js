@@ -42,6 +42,22 @@ function App() {
     resetValues();
     setLoading(true);
 
+    // const res = {
+    //   data: {
+    //     text1: ["تست متن اول", "تست متن دوم", "تست متن سوم"],
+    //     text2: ["تست متن دوم"],
+    //     title1: "تست عنوان اول",
+    //     title2: "تست عنوان دوم",
+    //     type: "comparison",
+    //   },
+    // };
+    // setLoading(false);
+    // setText1(res.data.text1);
+    // setText2(res.data.text2);
+    // setTitle1(res.data.title1);
+    // setTitle2(res.data.title2);
+    // setQuestionType(res.data.type);
+
     get("/get_paragraph/").then((res) => {
       setLoading(false);
       if (responseValidator(res.status)) {
@@ -73,9 +89,15 @@ function App() {
     const body = {
       question,
       answer,
-      supporting_facts: [support, support2],
+      supporting_facts: [
+        [title1, support],
+        [title2, support2],
+      ],
       type: questionType,
-      context: { title1, title2, text1, text2 },
+      context: [
+        [title1, text1],
+        [title2, text2],
+      ],
     };
     post("/add_to_database/", body).then((res) => {
       if (responseValidator(res.status)) {
@@ -185,12 +207,7 @@ function App() {
                     ])
                   );
                   if (e.length != 0)
-                    setSupport(
-                      e.map((item) => [
-                        JSON.parse(item).index,
-                        JSON.parse(item).item,
-                      ])
-                    );
+                    setSupport(e.map((item) => JSON.parse(item).index));
                   else setSupport(undefined);
                 }}
               >
@@ -216,12 +233,7 @@ function App() {
                 onChange={(e) => {
                   setDropdownTwoRenderValue(e);
                   if (e.length != 0)
-                    setSupport2(
-                      e.map((item) => [
-                        JSON.parse(item).index,
-                        JSON.parse(item).item,
-                      ])
-                    );
+                    setSupport2(e.map((item) => JSON.parse(item).index));
                   else setSupport2(undefined);
                 }}
               >
