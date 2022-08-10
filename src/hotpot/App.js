@@ -1,7 +1,6 @@
 import "./app.scss";
 import { Card, Button, Typography, Space, Input, Skeleton, Select } from "antd";
 import { useEffect, useState } from "react";
-import { hotpotData } from "./data";
 import { get, post, responseValidator } from "../scripts/api";
 import { toast } from "react-toastify";
 const { Option } = Select;
@@ -21,13 +20,32 @@ function App() {
   const [dropdownOneRenderValue, setDropDownOneRenderValue] = useState();
   const [dropdownTwoRenderValue, setDropdownTwoRenderValue] = useState();
   const [questionType, setQuestionType] = useState();
+  const [answerType, setAnswerType] = useState();
+  const [userQuestionType, setUserQuestionType] = useState();
   // function randomNumberInRange(min, max) {
   //   return Math.floor(Math.random() * (max - min + 1)) + min;
   // }
 
+  const answerTypesOptions = [
+    "شخص",
+    "گروه یا سازمان",
+    "مکان",
+    "تاریخ",
+    "کار هنری",
+    "شماره",
+    "بلی/خیر",
+    "صفت",
+    "رویداد",
+    "اسامی عام",
+    "اسامی خاص دیگر",
+  ];
+
+  const userQuestionTypesOptions = ["پل", "مقایسه‌ای"];
   function resetValues() {
     setDropDownOneRenderValue(undefined);
     setDropdownTwoRenderValue(undefined);
+    setAnswerType(undefined);
+    setUserQuestionType(undefined);
     setTitle1(undefined);
     setTitle2(undefined);
     setText1([]);
@@ -42,34 +60,34 @@ function App() {
     resetValues();
     setLoading(true);
 
-    // const res = {
-    //   data: {
-    //     text1: ["تست متن اول", "تست متن دوم", "تست متن سوم"],
-    //     text2: ["تست متن دوم"],
-    //     title1: "تست عنوان اول",
-    //     title2: "تست عنوان دوم",
-    //     type: "comparison",
-    //   },
-    // };
-    // setLoading(false);
-    // setText1(res.data.text1);
-    // setText2(res.data.text2);
-    // setTitle1(res.data.title1);
-    // setTitle2(res.data.title2);
-    // setQuestionType(res.data.type);
+    const res = {
+      data: {
+        text1: ["تست متن اول", "تست متن دوم", "تست متن سوم"],
+        text2: ["تست متن دوم"],
+        title1: "تست عنوان اول",
+        title2: "تست عنوان دوم",
+        type: "comparison",
+      },
+    };
+    setLoading(false);
+    setText1(res.data.text1);
+    setText2(res.data.text2);
+    setTitle1(res.data.title1);
+    setTitle2(res.data.title2);
+    setQuestionType(res.data.type);
 
-    get("/get_paragraph/").then((res) => {
-      setLoading(false);
-      if (responseValidator(res.status)) {
-        setText1(res.data.text1);
-        setText2(res.data.text2);
-        setTitle1(res.data.title1);
-        setTitle2(res.data.title2);
-        setQuestionType(res.data.type);
-      } else {
-        toast.error("در گرفتن اطلاعات خطایی رخ داده است");
-      }
-    });
+    // get("/get_paragraph/").then((res) => {
+    //   setLoading(false);
+    //   if (responseValidator(res.status)) {
+    //     setText1(res.data.text1);
+    //     setText2(res.data.text2);
+    //     setTitle1(res.data.title1);
+    //     setTitle2(res.data.title2);
+    //     setQuestionType(res.data.type);
+    //   } else {
+    //     toast.error("در گرفتن اطلاعات خطایی رخ داده است");
+    //   }
+    // });
   }
   // useEffect(() => {
   //   setLoading(true);
@@ -93,7 +111,8 @@ function App() {
         [title1, support],
         [title2, support2],
       ],
-      type: questionType,
+      answer_type: answerType,
+      type: userQuestionType,
       context: [
         [title1, text1],
         [title2, text2],
@@ -122,7 +141,7 @@ function App() {
       </Card>
       <Card>
         <Text className="question-type">
-          مدل سوال : {questionType == "comparison" ? "مقایسه‌ای" : "پل"}
+          نوع سوال : {questionType === "comparison" ? "مقایسه‌ای" : "پل"}
         </Text>
         <div className="text-container">
           <Card title={`پاراگراف شماره یک ( ${title1} ) `}>
@@ -200,13 +219,7 @@ function App() {
                 value={dropdownOneRenderValue}
                 onChange={(e) => {
                   setDropDownOneRenderValue(e);
-                  console.log(
-                    e.map((item) => [
-                      JSON.parse(item).index,
-                      JSON.parse(item).item,
-                    ])
-                  );
-                  if (e.length != 0)
+                  if (e.length !== 0)
                     setSupport(e.map((item) => JSON.parse(item).index));
                   else setSupport(undefined);
                 }}
@@ -232,7 +245,7 @@ function App() {
                 value={dropdownTwoRenderValue}
                 onChange={(e) => {
                   setDropdownTwoRenderValue(e);
-                  if (e.length != 0)
+                  if (e.length !== 0)
                     setSupport2(e.map((item) => JSON.parse(item).index));
                   else setSupport2(undefined);
                 }}
@@ -244,9 +257,53 @@ function App() {
                 ))}
               </Select>
             </div>
+            <div className="input-item">
+              <Text type="secondary">نوع سوال را انتخاب کنید</Text>
+              <Select
+                placeholder="نوع سوال"
+                style={{ width: "100%" }}
+                value={userQuestionType}
+                onChange={(e) => {
+                  setUserQuestionType(e);
+                }}
+              >
+                {userQuestionTypesOptions.map((item, index) => (
+                  <Option key={index} value={item}>
+                    {item}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+            <div className="input-item">
+              <Text type="secondary">نوع پاسخ را انتخاب کنید</Text>
+              <Select
+                placeholder="نوع پاسخ"
+                style={{ width: "100%" }}
+                value={answerType}
+                onChange={(e) => {
+                  setAnswerType(e);
+                }}
+              >
+                {answerTypesOptions.map((item, index) => (
+                  <Option key={index} value={item}>
+                    {item}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+
             <div className="btn-container">
               <Button
-                disabled={!(question && answer && support && support2)}
+                disabled={
+                  !(
+                    question &&
+                    answer &&
+                    support &&
+                    support2 &&
+                    answerType &&
+                    userQuestionType
+                  )
+                }
                 loading={postLoading}
                 onClick={submitHandler}
                 type="primary"
