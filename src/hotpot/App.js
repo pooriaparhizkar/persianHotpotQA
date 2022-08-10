@@ -60,34 +60,34 @@ function App() {
     resetValues();
     setLoading(true);
 
-    const res = {
-      data: {
-        text1: ["تست متن اول", "تست متن دوم", "تست متن سوم"],
-        text2: ["تست متن دوم"],
-        title1: "تست عنوان اول",
-        title2: "تست عنوان دوم",
-        type: "comparison",
-      },
-    };
-    setLoading(false);
-    setText1(res.data.text1);
-    setText2(res.data.text2);
-    setTitle1(res.data.title1);
-    setTitle2(res.data.title2);
-    setQuestionType(res.data.type);
+    // const res = {
+    //   data: {
+    //     text1: ["تست متن اول", "تست متن دوم", "تست متن سوم"],
+    //     text2: ["تست متن دوم"],
+    //     title1: "تست عنوان اول",
+    //     title2: "تست عنوان دوم",
+    //     type: "comparison",
+    //   },
+    // };
+    // setLoading(false);
+    // setText1(res.data.text1);
+    // setText2(res.data.text2);
+    // setTitle1(res.data.title1);
+    // setTitle2(res.data.title2);
+    // setQuestionType(res.data.type);
 
-    // get("/get_paragraph/").then((res) => {
-    //   setLoading(false);
-    //   if (responseValidator(res.status)) {
-    //     setText1(res.data.text1);
-    //     setText2(res.data.text2);
-    //     setTitle1(res.data.title1);
-    //     setTitle2(res.data.title2);
-    //     setQuestionType(res.data.type);
-    //   } else {
-    //     toast.error("در گرفتن اطلاعات خطایی رخ داده است");
-    //   }
-    // });
+    get("/get_paragraph/").then((res) => {
+      setLoading(false);
+      if (responseValidator(res.status)) {
+        setText1(res.data.text1);
+        setText2(res.data.text2);
+        setTitle1(res.data.title1);
+        setTitle2(res.data.title2);
+        setQuestionType(res.data.type);
+      } else {
+        toast.error("در گرفتن اطلاعات خطایی رخ داده است");
+      }
+    });
   }
   // useEffect(() => {
   //   setLoading(true);
