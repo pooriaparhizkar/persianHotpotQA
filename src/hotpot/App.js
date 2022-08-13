@@ -141,7 +141,8 @@ function App() {
       </Card>
       <Card>
         <Text className="question-type">
-          نوع سوال : {questionType === "comparison" ? "مقایسه‌ای" : "پل"}
+          نوع سوال پیشنهادی :{" "}
+          {questionType === "comparison" ? "مقایسه‌ای" : "پل"}
         </Text>
         <div className="text-container">
           <Card title={`پاراگراف شماره یک ( ${title1} ) `}>
@@ -258,9 +259,9 @@ function App() {
               </Select>
             </div>
             <div className="input-item">
-              <Text type="secondary">نوع سوال پیشنهادی را انتخاب کنید</Text>
+              <Text type="secondary">نوع سوال را انتخاب کنید</Text>
               <Select
-                placeholder="نوع سوال پیشنهادی"
+                placeholder="نوع سوال"
                 style={{ width: "100%" }}
                 value={userQuestionType}
                 onChange={(e) => {
